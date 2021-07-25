@@ -26,7 +26,7 @@ Note: This plugin will open a reverse proxy server at port 2233 by default. If t
 
 ## Compatibility
 
-The required API feature is only available for Obsidian v0.9.12+.
+The required API feature is only available for Obsidian v0.12.2+.
 
 ## Installation
 
