@@ -1,3 +1,4 @@
+import getPort from "get-port";
 import { debounce, Notice, Plugin, Setting } from "obsidian";
 
 import fetchBiliPoster from "./fake-bili/fetch-poster";
@@ -10,36 +11,6 @@ export default class MxBili extends Plugin {
 
   fetchPoster = fetchBiliPoster;
 
-  portSetting = (containerEl: HTMLElement) =>
-    new Setting(containerEl)
-      .setName("代理端口号")
-      .setDesc("若与现有端口冲突请手动指定其他端口")
-      .addText((text) => {
-        const save = debounce(
-          async (value: string) => {
-            this.setupProxy(+value);
-            this.settings.port = +value;
-            await this.saveSettings();
-          },
-          500,
-          true,
-        );
-        text
-          .setValue(this.settings.port.toString())
-          .onChange(async (value: string) => {
-            text.inputEl.toggleClass("incorrect", !isVaildPort(value));
-            if (isVaildPort(value)) save(value);
-          });
-      });
-
-  async onload() {
-    console.log("loading MxBili");
-
-    await this.loadSettings();
-
-    this.setupProxy(this.settings.port);
-  }
-
   setupProxy = (port: number): void => {
     if (this.server) this.server.close().listen(port);
     else {
@@ -51,6 +22,32 @@ export default class MxBili extends Plugin {
       });
     }
   };
+
+  /**
+   * detect if port being used, and save free port
+   * @param port desire port
+   * @returns free port
+   */
+  setupPort = async (port: number): Promise<number> => {
+    const newPort = await getPort({ port });
+    if (newPort !== port) {
+      new Notice(`${port}端口已被占用，切换至${newPort}`);
+    }
+    if (this.settings.port !== newPort) {
+      this.settings.port = newPort;
+      await this.saveSettings();
+    }
+    return newPort;
+  };
+
+  async onload() {
+    console.log("loading MxBili");
+
+    await this.loadSettings();
+
+    const newPort = await this.setupPort(this.settings.port);
+    this.setupProxy(newPort);
+  }
 
   onunload() {
     console.log("unloading MxBili");
@@ -65,6 +62,29 @@ export default class MxBili extends Plugin {
   async saveSettings() {
     await this.saveData(this.settings);
   }
+
+  portSetting = (containerEl: HTMLElement) =>
+    new Setting(containerEl)
+      .setName("代理端口号")
+      .setDesc("若与现有端口冲突请手动指定其他端口")
+      .addText((text) => {
+        const save = debounce(
+          async (value: string) => {
+            const newPort = await this.setupPort(+value);
+            if (newPort !== +value) text.setValue(newPort.toString());
+            this.setupProxy(newPort);
+          },
+          500,
+          true,
+        );
+        text
+          .setValue(this.settings.port.toString())
+          .onChange(async (value: string) => {
+            text.inputEl.toggleClass("incorrect", !isVaildPort(value));
+            if (isVaildPort(value) && this.settings.port !== +value)
+              save(value);
+          });
+      });
 }
 
 interface MxBiliSettings {

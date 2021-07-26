@@ -36,6 +36,7 @@
     "eslint-plugin-prettier": "^3.4.0",
     "eslint-plugin-simple-import-sort": "^7.0.0",
     "express": "^4.17.1",
+    "get-port": "^5.1.1",
     "http-proxy-middleware": "^2.0.1",
     "json": "^11.0.0",
     "obsidian": "^0.12.11",
