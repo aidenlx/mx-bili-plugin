@@ -54,7 +54,7 @@ const getUrl: RequestHandler = async (req, res, next) => {
     throw new Error("invalid avid/bvid");
   }
 
-  const p = req.query.p;
+  const p = req.query.page;
   if (typeof p === "string" && parseInt(p, 10)) {
     page = parseInt(p, 10);
   } else {
@@ -108,7 +108,7 @@ const getCid = async (id: vid, page: number | null) => {
   }
 
   let cid;
-  if (page) cid = pagelistData.data[page].cid;
+  if (page) cid = pagelistData.data[page - 1].cid;
   else cid = pagelistData.data[0].cid;
 
   return cid;
@@ -152,8 +152,8 @@ const convertToFakeUrl = (obj: PlayUrl.Data) => {
       info.backup_url.forEach((v) => (v = toFakeUrl(v)));
       info.backupUrl.forEach((v) => (v = toFakeUrl(v)));
     };
-    obj.dash.audio.forEach(irMediaInfo);
-    obj.dash.video.forEach(irMediaInfo);
+    obj.dash.audio?.forEach(irMediaInfo);
+    obj.dash.video?.forEach(irMediaInfo);
   } else if (isTrad(obj)) {
     obj.durl.forEach((v) => {
       v.url = toFakeUrl(v.url);

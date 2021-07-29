@@ -5,7 +5,7 @@ export const toMPD = (data: DashData) => {
   const d = data.dash;
 
   let videos = d.video
-    .filter((v) => v.codecs.startsWith("avc1"))
+    ?.filter((v) => v.codecs.startsWith("avc1"))
     .map((v) => ({
       BaseURL: v.baseUrl,
       "@id": v.id,
@@ -23,7 +23,7 @@ export const toMPD = (data: DashData) => {
       },
     }));
 
-  let audios = d.audio.map((v) => ({
+  let audios = d.audio?.map((v) => ({
     BaseURL: v.baseUrl,
     "@id": v.id,
     "@mimeType": v.mimeType,
@@ -45,11 +45,21 @@ export const toMPD = (data: DashData) => {
       mediaPresentationDuration: `PT${d.duration}S`
     })
     .ele("Period", {duration: `PT${d.duration}S`})
-      .ele("AdaptationSet",{ contentType:"video", bitstreamSwitching:true })
-        .ele({Representation:videos}).up()
-      .up()
-      .ele("AdaptationSet",{ contentType:"audio", bitstreamSwitching:true })
-        .ele({Representation:audios}).up()
+
+  const setup = (type: "video" | "audio") => {
+    const media = type === "audio" ? audios : videos;
+    if (media) {
+      return root
+        .ele("AdaptationSet", {
+          contentType: type,
+          bitstreamSwitching: true,
+        })
+        .ele({ Representation: media })
+        .up();
+    } else return root;
+  };
+  setup("video").up();
+  setup("audio");
 
   const xml = root.end({ prettyPrint: true });
   return xml;
