@@ -140,6 +140,7 @@ const getPlayData = async (id: vid, cid: number) => {
 };
 
 const convertToFakeUrl = (obj: PlayUrl.Data) => {
+  console.log(obj);
   const toFakeUrl = (src: string) => {
     let { host, pathname, search } = new URL(src);
     return `http://localhost:${PORT}/fake/${host + pathname + search}`;
@@ -149,8 +150,8 @@ const convertToFakeUrl = (obj: PlayUrl.Data) => {
     const irMediaInfo = (info: PlayUrl.mediaInfo) => {
       info.baseUrl = toFakeUrl(info.baseUrl);
       info.base_url = toFakeUrl(info.base_url);
-      info.backup_url.forEach((v) => (v = toFakeUrl(v)));
-      info.backupUrl.forEach((v) => (v = toFakeUrl(v)));
+      info.backup_url?.forEach((v) => (v = toFakeUrl(v)));
+      info.backupUrl?.forEach((v) => (v = toFakeUrl(v)));
     };
     obj.dash.audio?.forEach(irMediaInfo);
     obj.dash.video?.forEach(irMediaInfo);
