@@ -158,7 +158,7 @@ const convertToFakeUrl = (obj: PlayUrl.Data) => {
   } else if (isTrad(obj)) {
     obj.durl.forEach((v) => {
       v.url = toFakeUrl(v.url);
-      v.backup_url.forEach((url) => (url = toFakeUrl(url)));
+      v.backup_url?.forEach((url) => (url = toFakeUrl(url)));
     });
   } else {
     assertNever(obj);
