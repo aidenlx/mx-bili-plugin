@@ -1,3 +1,10 @@
+## [0.3.1](https://github.com/aidenlx/mx-bili-plugin/compare/0.3.0...0.3.1) (2021-07-30)
+
+
+### Bug Fixes
+
+* fix bili fail to get url in foreign countries ([fe3eaf0](https://github.com/aidenlx/mx-bili-plugin/commit/fe3eaf04a9c02c8e7ca5ce9f690c67c3cd35c464))
+
 # [0.3.0](https://github.com/aidenlx/mx-bili-plugin/compare/0.2.0...0.3.0) (2021-07-29)
 
 
