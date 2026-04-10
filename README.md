@@ -1,5 +1,9 @@
 # Media Extended BiliBili Plugin
 
+> [!warning]
+> 此插件已不再维护，请查看 Media Extended v4.2 beta 查看最新的b站支持
+> <https://mx.aidenlx.site/changelog/v4.2.0-beta.4>
+
 Add advanced bilibili videos support for [Media Extended](https://github.com/aidenlx/media-extended). Required by Media Extended v2.9.0+
 
 为Media Extended v2.9.0+添加高级Bilibili支持
